@@ -58,6 +58,7 @@ docker system prune
 
 ```bash
 mkdir -p /tmp/data
+sudo chmod ago+w -R /tmp/data
 
 docker run -v /tmp/data:/data --user "$(id -u):$(id -g)" --name=<name> <name>
 # adding the -d flag will detach the container's output
