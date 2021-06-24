@@ -59,7 +59,7 @@ docker system prune
 ```bash
 mkdir -p /tmp/data
 
-docker run -v /tmp:/data --user "$(id -u):$(id -g)" --name=<name> <name>
+docker run -v /tmp/data:/data --user "$(id -u):$(id -g)" --name=<name> <name>
 # adding the -d flag will detach the container's output
 #   stop it with docker stop, but get the running name first with docker container ls
 #   or force the name when starting the container with the `--name=<name>` option as shown
