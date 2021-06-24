@@ -30,6 +30,12 @@ the `CMD` provides the exec style params to the `ENTRYPOINT` -- these can be ove
 
 _Make sure you have the right source (IP, port, user, password) by using [VLC](https://www.videolan.org/vlc/) *and* with `telnet`, `nc`, or other from the Docker host to ensure the stream can be accessed._
 
+**No RTSP Source?**
+
+You can use a series of numbered files and the `multifilesrc` or the `fakesrc` plugins. A convenient collection of numbered images can be found at the [Mall Crowd Counting Dataset](http://personal.ie.cuhk.edu.hk/~ccloy/downloads_mall_dataset.html).
+
+In the Dockerfile, two alternate pipelines are given for the `multifilesrc` and the `fakesrc` options. Uncomment them (and comment the `rtspsrc` CMD) to use those. Alternatively, you can provide an alternate pipeline on the command line when invoking Docker.
+
 3. (Optional) modify the `location` parameter for the `multifilesink` plugin to set the location of the file that the pipeline will write.
 
 4. Now, build the image:

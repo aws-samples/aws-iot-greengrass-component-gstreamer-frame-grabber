@@ -34,6 +34,8 @@ RUN apt-get -y update && apt-get install -y \
 	gstreamer1.0-qt5 \
 	gstreamer1.0-pulseaudio \
 	&& apt-get clean && apt-get autoremove && rm -rf /var/lib/apt/lists/*
-	
+
 ENTRYPOINT ["gst-launch-1.0"] 
 CMD ["rtspsrc", "location=\"rtsp://<ip>:<port>/h264?username=<user>&password=<pass>\"", "!", "queue", "!", "rtph264depay", "!", "avdec_h264", "!", "jpegenc", "!", "multifilesink", "location=\"/data/frame.jpg\""]
+# CMD ["fakesrc", "num-buffers=10", "!", "multifilesink", "location=\"/data/frame.jpg\""]
+# CMD ["multifilesrc", "location=/frames/seq_%06d.jpg", "index=1", "loop=true", "caps=\"image/jpg,framerate=\\(fraction\\)12/1\"", "!", "multifilesink", "location=\"/data/frame.jpg\""]
