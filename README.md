@@ -57,13 +57,15 @@ docker system prune
 1. Start the docker container with
 
 ```bash
+mkdir -p /tmp/data
+
 docker run -v /tmp:/data --user "$(id -u):$(id -g)" --name=<name> <name>
 # adding the -d flag will detach the container's output
 #   stop it with docker stop, but get the running name first with docker container ls
 #   or force the name when starting the container with the `--name=<name>` option as shown
 ```
 
-This will start the container, mapping the host's `/tmp` dir to the container's `/data` dir. New files will be created with the current user/group. 
+This will start the container, mapping the host's `/tmp/data` dir to the container's `/data` dir. New files will be created with the current user/group. 
 
 **Normal output**
 ```
@@ -84,21 +86,22 @@ Redistribute latency...
 
 ```bash
 # modify as needed if you changed the output location
-ls -l /tmp/frame.jpg
+ls -l /tmp/data/frame.jpg
 ``` 
 observe the user, group, timestamp, etc. 
 
 3. Open the file in an image viewer and verify correctness.
 
-_Tip_: on Ubuntu hosts, the command `eog /tmp/frame.jpg` will open a window with the image--it should refresh as the pipeline writes new frames.
+_Tip_: on Ubuntu hosts, the command `eog /tmp/data/frame.jpg` will open a window with the image--it should refresh as the pipeline writes new frames.
 
 _Troubleshooting_
 
 Try executing the GStreamer pipeline interactively.
 
 ```bash
+mkdir -p /tmp/data
 # launch the container in interactive mode
-docker run -v  /tmp:/data --user "$(id -u):$(id -g)" -it --entrypoint /bin/bash gst
+docker run -v  /tmp/data:/data --user "$(id -u):$(id -g)" -it --entrypoint /bin/bash gst
 ```
 
 _(Errors about not having a name are normal.)_
