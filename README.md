@@ -229,9 +229,16 @@ And enter the following content for the recipe, replacing paste_bucket_name_here
 {
   "RecipeFormatVersion": "2020-01-25",
   "ComponentName": "<component-name>",
-  "ComponentVersion": "1.0.0",
+  "ComponentVersion": "<component-version>",
   "ComponentDescription": "A component that runs a Docker container from an image in an S3 bucket.",
   "ComponentPublisher": "Amazon",
+  "ComponentConfiguration": {
+      "DefaultConfiguration": {
+          "mounts": "-v /tmp/data:/data -v /greengrass/v2/packages/artifacts-unarchived/com.example.sample_data/1.0.0/com.example.sample_data/frames:/frames",
+          "entrypoint": "gst-launch-1.0",
+          "command": "fakesrc ! multifilesink location=\"/data/frame.jpg\""
+      }
+  },
   "Manifests": [
     {
       "Platform": {
@@ -242,7 +249,7 @@ And enter the following content for the recipe, replacing paste_bucket_name_here
           "Script": "docker load -i {artifacts:path}/<container-name>.tar.gz"
         },
         "Startup": {
-          "Script": "docker run --rm -d -v /tmp/data:/data --user \"$(id -u):$(id -g)\" --name=<container-name> <container-name>"
+          "Script": "docker run --rm -d {configuration:/mounts} --user \"$(id -u):$(id -g)\" --name=gst --entrypoint {configuration:/entrypoint} gst {configuration:/command}"
         },
         "Shutdown": {
           "Script": "docker stop <container-name>"
@@ -258,9 +265,17 @@ And enter the following content for the recipe, replacing paste_bucket_name_here
 }
 ```
 
-**NB-** the above command assumes the RAM disk was set up for `/tmp/data` -- modify it as appropriate for your installation.
+**NB-** the above command assumes the RAM disk was set up for `/tmp/data` -- modify it as appropriate for your installation in the `mounts` property. Likewise, set the `command` configuration property for other GStreamer pipelines. For example,
 
-Also note that for this recipe, we use the `Startup`/`Shutdown` Events of the `Lifecycle`. This is important when creating a background process. For processes that are not background, use the `Run` event. `Shutdown` will be called as soon as the `Run` command completes or when the core is shutting down.
+```json
+"command": "gst-launch-1.0 -e rtspsrc location=\"rtsp://192.168.5.193:554/h264?username=admin&password=123456\" ! queue ! rtph264depay ! h264parse ! mp4mux ! filesink location=/data/file.mp4"
+```
+
+will set GStreamer to read the rtsp stream from `192.168.5.193` with username `admin` and password `123456`.
+
+Likewise the configuration property `entrypoint` can be overridden for debugging purposes. Setting this to `echo` or `gst-inspect-1.0` can be helpful.
+
+In this recipe, we use the `Startup`/`Shutdown` Events of the `Lifecycle`. This is important when creating a background process. For processes that are not background, use the `Run` event. `Shutdown` will be called as soon as the `Run` command completes or when the core is shutting down.
 
 
 5. create the GG component with 
