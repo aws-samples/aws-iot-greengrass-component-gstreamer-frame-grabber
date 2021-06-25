@@ -234,7 +234,7 @@ And enter the following content for the recipe, replacing paste_bucket_name_here
   "ComponentPublisher": "Amazon",
   "ComponentConfiguration": {
       "DefaultConfiguration": {
-          "mounts": "-v /tmp/data:/data -v /greengrass/v2/packages/artifacts-unarchived/com.example.sample_data/1.0.0/com.example.sample_data/frames:/frames",
+          "mounts": "-v /tmp/data:/data",
           "entrypoint": "gst-launch-1.0",
           "command": "fakesrc ! multifilesink location=\"/data/frame.jpg\""
       }
