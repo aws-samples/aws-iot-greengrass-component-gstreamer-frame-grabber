@@ -289,6 +289,7 @@ aws greengrassv2 create-component-version \
 
 You have now created a Greengrass component to run a GStreamer pipeline to a known file in your AWS Account. You can continue to deploy this component to your Greengrass Cores which will start the container running and producing output files (e.g. `/tmp/data/frame.jpg`) on the Greengrass core. These results can be inspected with `eog` or other tools on the Greengrass core.
 
+You can also customize the application of the component by overriding the configuration as described above.
 ## Develoment and Troubleshooting considerations 
 
 To fix a failed deployment:
