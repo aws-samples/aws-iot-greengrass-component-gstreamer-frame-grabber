@@ -58,14 +58,18 @@ docker images
 docker system prune
 ```
 
+5. Create a shared output location for the frame captures
+
+```bash
+mkdir -p /tmp/data
+sudo chmod ago+w -R /tmp/data
+```
+
 ### Test the Docker Image
 
 1. Start the docker container with
 
 ```bash
-mkdir -p /tmp/data
-sudo chmod ago+w -R /tmp/data
-
 docker run -v /tmp/data:/data --user "$(id -u):$(id -g)" --name=<name> <name>
 # adding the -d flag will detach the container's output
 #   stop it with docker stop, but get the running name first with docker container ls
