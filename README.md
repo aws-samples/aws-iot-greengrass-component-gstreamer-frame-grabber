@@ -246,7 +246,8 @@ And enter the following content for the recipe, replacing paste_bucket_name_here
   "Manifests": [
     {
       "Platform": {
-        "os": "linux"
+        "os": "linux",
+        "arhictecture": "<arch_of_machine_building_the_image>"
       },
       "Lifecycle": {
         "Install": {
