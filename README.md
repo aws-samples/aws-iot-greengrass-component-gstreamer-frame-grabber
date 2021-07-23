@@ -8,6 +8,8 @@ This project targets Linux hosts and was developed using Linux and Mac desktop e
 
 Using Computer Vision models often means acquiring images from RTSP sources. GStreamer provides a flexible and effective means to acquire those sources and render the current frame. As [GStreamer](https://gstreamer.freedesktop.org/) can require a number of libraries and be a bit tricky to work with, using Docker helps to manage these dependencies.
 
+_Note:_ This section will build a Docker image and wrap it in a Greengrass V2 component. Docker images are specific to the OS and instruction architecture of the host. It can be convenient to build the image on one machine and deploy it to multiple others. However, the OS and architecture needs to be consistent. To avoid any issues, these instructions will build the image on the same system as the target for deployment. Advanced users can adapt this sequence to their needs.
+
 _Prerequisites_:
 
 * [Install Docker](https://docs.docker.com/engine/install/)
@@ -70,10 +72,12 @@ sudo chmod ago+w -R /tmp/data
 1. Start the docker container with
 
 ```bash
-docker run -v /tmp/data:/data --user "$(id -u):$(id -g)" --name=<name> <name>
+docker run -v /tmp/data:/data --name=<name> <name>
 # adding the -d flag will detach the container's output
 #   stop it with docker stop, but get the running name first with docker container ls
 #   or force the name when starting the container with the `--name=<name>` option as shown
+# Since we made /tmp/data world writable, we don't need to map the docker user, 
+#   but could add back with `--user "$(id -u):$(id -g)"` on command line
 ```
 
 This will start the container, mapping the host's `/tmp/data` dir to the container's `/data` dir. New files will be created with the current user/group. 
@@ -103,7 +107,7 @@ observe the user, group, timestamp, etc.
 
 3. Open the file in an image viewer and verify correctness.
 
-_Tip_: on Ubuntu hosts, the command `eog /tmp/data/frame.jpg` will open a window with the image--it should refresh as the pipeline writes new frames.
+_Tip_: If using a headed Ubuntu host (not Cloud9), the command `eog /tmp/data/frame.jpg` will open a window with the image--it should refresh as the pipeline writes new frames.
 
 _Troubleshooting_
 
@@ -112,7 +116,7 @@ Try executing the GStreamer pipeline interactively.
 ```bash
 mkdir -p /tmp/data
 # launch the container in interactive mode
-docker run -v  /tmp/data:/data --user "$(id -u):$(id -g)" -it --entrypoint /bin/bash gst
+docker run -v /tmp/data:/data -it --entrypoint /bin/bash gst
 ```
 
 _(Errors about not having a name are normal.)_
@@ -125,6 +129,7 @@ gst-launch-1.0 rtspsrc location="rtsp://<ip>:<port>/h264?username=<user>&passwor
 
 # capture the stream to a file until Ctrl-C cancels 
 gst-launch-1.0 -e rtspsrc location="rtsp://192.168.5.193:554/h264?username=admin&password=123456" ! queue ! rtph264depay ! h264parse ! mp4mux ! filesink location=/data/file.mp4
+# change the IP number as needed for your RTSP source
 ```
 
 Seeing errors about plugins missing or misconfigured?
@@ -140,7 +145,7 @@ Compose additional pipelines, consulting the [GStreamer Plugin Reference](https:
 
 ### (Optional) Step 3. Use a RAM disk for the images
 
-As the GStreamer pipeline will (re)write the frame file 30x/second, using a RAM Disk for these will save power and disk cycles as well as improve overall performance. When inference is added, we can extend the use of this RAM Disk.
+As the GStreamer pipeline will (re)write the frame file 30x/second, using a RAM Disk for these will save power and disk cycles as well as improve overall performance. When inference is added, we can extend the use of this RAM Disk. This step may be important for traditional linux systems or other systems where you wish to avoid repeated disk writes. That is, this is **not necessary for Cloud 9** hosts, but may be helpful for embedded systems where the 'disk' is an SD card with finite lifetime writes.
 
 * create entry in `/etc/fstab` 
 
@@ -254,7 +259,7 @@ And enter the following content for the recipe, replacing paste_bucket_name_here
           "Script": "docker load -i {artifacts:path}/<container-name>.tar.gz"
         },
         "Startup": {
-          "Script": "docker run --rm -d {configuration:/mounts} --user \"$(id -u):$(id -g)\" --name=gst --entrypoint {configuration:/entrypoint} gst {configuration:/command}"
+          "Script": "docker run --rm -d {configuration:/mounts} --name=<container-name> --entrypoint {configuration:/entrypoint} gst {configuration:/command}"
         },
         "Shutdown": {
           "Script": "docker stop <container-name>"
@@ -270,7 +275,15 @@ And enter the following content for the recipe, replacing paste_bucket_name_here
 }
 ```
 
-**NB-** the above command assumes the RAM disk was set up for `/tmp/data` -- modify it as appropriate for your installation in the `mounts` property. Likewise, set the `command` configuration property for other GStreamer pipelines. For example,
+**NB-** the above command assumes the RAM disk was set up for `/tmp/data` -- modify it as appropriate for your installation in the `mounts` property. Also ensure the directory exists and the docker user has write permissions. 
+
+```bash
+mkdir -p /tmp/data
+touch /tmp/data/frame.jpg
+chmod ago+rw -R /tmp/data
+```
+
+You can also set the `command` configuration property for other GStreamer pipelines. For example,
 
 ```json
 "command": "gst-launch-1.0 -e rtspsrc location=\"rtsp://192.168.5.193:554/h264?username=admin&password=123456\" ! queue ! rtph264depay ! h264parse ! mp4mux ! filesink location=/data/file.mp4"
@@ -278,7 +291,7 @@ And enter the following content for the recipe, replacing paste_bucket_name_here
 
 will set GStreamer to read the rtsp stream from `192.168.5.193` with username `admin` and password `123456`.
 
-Likewise the configuration property `entrypoint` can be overridden for debugging purposes. Setting this to `echo` or `gst-inspect-1.0` can be helpful.
+The configuration property `entrypoint` can be overridden for debugging purposes. Setting this to `echo` or `gst-inspect-1.0` can be helpful.
 
 In this recipe, we use the `Startup`/`Shutdown` Events of the `Lifecycle`. This is important when creating a background process. For processes that are not background, use the `Run` event. `Shutdown` will be called as soon as the `Run` command completes or when the core is shutting down.
 
