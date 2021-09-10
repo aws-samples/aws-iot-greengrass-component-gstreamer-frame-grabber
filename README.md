@@ -153,7 +153,7 @@ As the GStreamer pipeline will (re)write the frame file 30x/second, using a RAM 
 tmpfs /tmp/data tmpfs defaults,noatime,nosuid,nodev,noexec,mode=1777,size=32M 0 0
 ```
 
-creates 32M RAM disk in `/tmp/gst`...  the mapped volume for docker
+creates 32M RAM disk in `/tmp/data`...  the mapped volume for docker
 
 Mount the RAM Disk with
 
@@ -280,7 +280,7 @@ And enter the following content for the recipe, replacing paste_bucket_name_here
 ```bash
 mkdir -p /tmp/data
 touch /tmp/data/frame.jpg
-chmod ago+rw -R /tmp/data
+sudo chmod ago+rw -R /tmp/data
 ```
 
 You can also set the `command` configuration property for other GStreamer pipelines. For example,
