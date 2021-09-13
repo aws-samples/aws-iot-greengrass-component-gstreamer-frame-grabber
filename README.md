@@ -42,7 +42,8 @@ In the Dockerfile, two alternate pipelines are given for the `multifilesrc` and 
 
 3. (Optional) modify the `location` parameter for the `multifilesink` plugin to set the location of the file that the pipeline will write.
 
-4. Now, build the image:
+4. **Save the Dockerfile**.
+5. Now, build the image:
 
 ```bash
 docker build --rm -t <name> .
