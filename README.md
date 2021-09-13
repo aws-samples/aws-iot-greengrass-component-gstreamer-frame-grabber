@@ -22,6 +22,8 @@ _Prerequisites_:
 
 The `RUN` command of the `Dockerfile` will install all the packages needed. The current build is based on Ubuntu 20.04, but it is certainly possible to create a smaller, more targetted image. 
 
+**Open the Dockerfile in your editor**, make the following changes.
+
 Note the export of the Time Zone -- the GStreamer install will pause (and fail) if this is not set. 
 
 1. set `TZ` to your [time zone](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
