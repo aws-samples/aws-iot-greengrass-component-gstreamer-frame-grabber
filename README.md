@@ -127,11 +127,11 @@ _(Errors about not having a name are normal.)_
 Execute pipelines manually
 
 ```bash
-# same command as in the Dockerfile
+# extract current frame from a stream until Ctrl-C cancels 
 gst-launch-1.0 rtspsrc location="rtsp://<ip>:<port>/h264?username=<user>&password=<pass>" ! queue ! rtph264depay ! avdec_h264 ! jpegenc ! multifilesink location="/data/frame.jpg"
 
 # capture the stream to a file until Ctrl-C cancels 
-gst-launch-1.0 -e rtspsrc location="rtsp://192.168.5.193:554/h264?username=admin&password=123456" ! queue ! rtph264depay ! h264parse ! mp4mux ! filesink location=/data/file.mp4
+gst-launch-1.0 rtspsrc location="rtsp:/<ip>:<port>/h264?username=admin&password=123456" ! queue ! rtph264depay ! h264parse ! mp4mux ! filesink location=/data/file.mp4
 # change the IP number as needed for your RTSP source
 ```
 
