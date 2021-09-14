@@ -255,7 +255,7 @@ And enter the following content for the recipe, replacing paste_bucket_name_here
     {
       "Platform": {
         "os": "linux",
-        "arhictecture": "<arch_of_machine_building_the_image>"
+        "architecture": "<arch_of_machine_building_the_image>"
       },
       "Lifecycle": {
         "Install": {
@@ -306,6 +306,12 @@ In this recipe, we use the `Startup`/`Shutdown` Events of the `Lifecycle`. This 
 ```bash
 aws greengrassv2 create-component-version \
   --inline-recipe fileb://~/GreengrassCore/recipes/$component_name-$component_version.json
+```
+
+**An Error** of `not authorized to perform: null` usually indicates an error in the JSON for the recipe. Validate the JSON with a tool like `jq`.
+
+```bash
+cat ~/GreengrassCore/recipes/$component_name-$component_version.json | jq
 ```
 
 ## FINISHED: Next steps
