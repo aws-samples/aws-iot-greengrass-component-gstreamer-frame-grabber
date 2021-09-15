@@ -280,7 +280,7 @@ And enter the following content for the recipe, replacing paste_bucket_name_here
 }
 ```
 
-Consult the [AWS IoT Greengrass component recipe reference](https://docs.aws.amazon.com/greengrass/v2/developerguide/component-recipe-reference.html) for more information about the properties of the recipe file.
+Consult the [AWS IoT Greengrass component recipe reference](https://docs.aws.amazon.com/greengrass/v2/developerguide/component-recipe-reference.html) for more information about the properties of the recipe file, including how to set `<arch_of_machine_building_the_image>`, which **MUST** match the target architecture as well.
 
 **NB-** the above command assumes the RAM disk was set up for `/tmp/data` -- modify it as appropriate for your installation in the `mounts` property. Also note that the directory is created in the Install Lifecycle for the component recipe. Adjust as needed for your environment.  This will ensure the directory exists and the docker user has write permissions. 
 
