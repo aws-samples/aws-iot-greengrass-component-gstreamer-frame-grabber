@@ -65,13 +65,6 @@ docker images
 docker system prune
 ```
 
-5. Create a shared output location for the frame captures
-
-```bash
-mkdir -p /tmp/data
-sudo chmod ago+w -R /tmp/data
-```
-
 ### Test the Docker Image
 
 1. Start the docker container with
