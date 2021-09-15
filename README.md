@@ -47,6 +47,8 @@ In the Dockerfile, two alternate pipelines are given for the `multifilesrc` and 
 
 ```bash
 docker build --rm -t <name> .
+# example
+# docker build --rm -t gst .
 ```
 
 The `--rm` switch will remove any previous builds (which you may accumulate if you change the `CMD` parameters or other settings). However, orphaned images can still accumulate. 
