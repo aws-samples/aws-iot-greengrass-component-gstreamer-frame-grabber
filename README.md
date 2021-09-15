@@ -168,7 +168,7 @@ You may need to `chown` the user/group of the created tmp dir **OR** execute sub
 
 ## Part 2. Build the Greengrass Component
 
-AWS IoT Greengrass can manage and run a Docker container. If AWS IoT Greengrass v2 is **NOT** already installed, consult [Getting started with AWS IoT Greengrass V2](https://docs.aws.amazon.com/greengrass/v2/developerguide/getting-started.html)
+AWS IoT Greengrass can manage and run a Docker container. If AWS IoT Greengrass v2 is **NOT** already installed, consult [Getting started with AWS IoT Greengrass V2](https://docs.aws.amazon.com/greengrass/v2/developerguide/getting-started.html). **Note** If you are using the same system for both development (creating the image and component) as well as the target (where the Greengrass core and this component will run), ensure that side effects of development and testing are not left over prior to deploying the component. Specifically, check filesystem mounts and directories that may have been created above.  The installation recipe below will **_create_** a directory in `/tmp` (configurable). It is important that this directory creation be performed by the installation script so that the correct user/group owner is set for this directory.  Use `sudo rm -rf /tmp/data` or other command if needed to remove any development-time setup.
 
 1. archive the docker image 
 
