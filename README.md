@@ -227,7 +227,14 @@ aws s3 sync ~/GreengrassCore/ s3://$bucket_name/
 
 ```bash
 mkdir -p ~/GreengrassCore/recipes/
-vim ~/GreengrassCore/recipes/$component_name-$component_version.json
+touch ~/GreengrassCore/recipes/$component_name-$component_version.json
+
+# paste these values
+echo $component_name " " $component_version " " $bucket_name
+
+# edit using IDE or other editor
+# for example: vim
+# vim ~/GreengrassCore/recipes/$component_name-$component_version.json
 ```
 
 And enter the following content for the recipe, replacing paste_bucket_name_here with the name of the bucket you created earlier. Also replace component-name, component-version, and container-name
