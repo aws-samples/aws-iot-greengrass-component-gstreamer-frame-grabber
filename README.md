@@ -259,10 +259,10 @@ And enter the following content for the recipe, replacing paste_bucket_name_here
       },
       "Lifecycle": {
         "Install": {
-          "Script": "docker load -i {artifacts:path}/<container-name>.tar.gz"
+          "Script": "mkdir -p /tmp/data; docker load -i {artifacts:path}/<container-name>.tar.gz"
         },
         "Startup": {
-          "Script": "docker run --rm -d {configuration:/mounts} --name=<container-name> --entrypoint {configuration:/entrypoint} gst {configuration:/command}"
+          "Script": "docker run --user=$(id -u):$(id -g) --rm -d {configuration:/mounts} --name=<container-name> --entrypoint {configuration:/entrypoint} gst {configuration:/command}"
         },
         "Shutdown": {
           "Script": "docker stop <container-name>"
