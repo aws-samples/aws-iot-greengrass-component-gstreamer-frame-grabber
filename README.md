@@ -101,6 +101,9 @@ docker system prune
 1. Start the docker container with
 
 ```bash
+# create the mount point for the volume
+mkdir -p /tmp/data
+
 docker run -v /tmp/data:/data --name=<name> <name>
 # adding the -d flag will detach the container's output
 #   stop it with docker stop, but get the running name first with docker container ls
