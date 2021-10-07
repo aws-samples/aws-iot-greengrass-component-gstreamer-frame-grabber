@@ -4,6 +4,37 @@ Using this project you can setup a docker container that will pull the latest fr
 
 This project targets Linux hosts and was developed using Linux and Mac desktop environments. 
 
+**_NOTE_**: The architecture (x86, amd64, armv7l, x86_64, etc.) of the built container must match the target device.  That is, if your target is Raspberry Pi (armv7l), then you must either build the image on an armv7l OR cross-compile. For the purposes of **_this project_**, cross-compiling is out of scope and the reader is advised to build on the target architecture. 
+
+Likewise the base image for the container must match. For that reason, alternate `Dockerfiles` are provided for some common platforms. 
+
+**Check your development host and target device architecture**
+
+```bash
+uname -a
+
+# output for a Raspberry Pi 4:
+#Linux raspberrypi 5.10.63-v7l+ #1457 SMP Tue Sep 28 11:26:14 BST 2021 armv7l GNU/Linux
+
+# x86 Mac
+#Darwin 3c22fbe3d4e9.ant.amazon.com 20.6.0 Darwin Kernel Version 20.6.0: Mon Aug 30 06:12:21 PDT 2021; root:xnu-7195.141.6~3/RELEASE_X86_64 x86_64
+
+# i7 Ubuntu
+#Linux dev 5.11.0-37-generic #41~20.04.2-Ubuntu SMP Fri Sep 24 09:06:38 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux
+
+# grab just the machine architecture with
+uname -m
+```
+
+**Select one of the provided `Dockerfiles` for common platforms or modify as needed**
+
+| platform | Dockerfile | |
+| --- | --- | --- |
+| x86_64 | `Dockerfile` | use as is below |
+| Raspberry Pi (`armv7l`) | `Dockerfile.rpi` | `mv Dockerfile Dockerfile.x86_64; mv Dockerfile.rpi Dockerfile` |
+
+Before proceeding, inspect and verify the Dockerfile contents and filename to agree with the commands in this document.
+
 ## Part 1 - RTSP Stream to Still in a Docker Container
 
 Using Computer Vision models often means acquiring images from RTSP sources. GStreamer provides a flexible and effective means to acquire those sources and render the current frame. As [GStreamer](https://gstreamer.freedesktop.org/) can require a number of libraries and be a bit tricky to work with, using Docker helps to manage these dependencies.
